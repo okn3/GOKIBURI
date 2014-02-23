@@ -1,0 +1,244 @@
+enchant();
+
+window.onload = function() {
+
+//ゲーム基本設定 2:3 
+var gameWidth = 320;
+var gameHight = 480;
+var game = new Game(gameWidth,gameHight);
+game.fps = 24;
+
+//画像読み込み
+game.preload('tatami.jpg');
+game.preload('goki1.png');
+game.preload('goki2.png');
+game.preload('jetl.png');
+game.preload('jetr.png');
+game.preload('kemuri.png');
+game.preload('bgm.mp3');
+game.preload('gusha.mp3');
+game.preload('hoihoi.png');
+
+game.onload = function() {
+
+//プレイヤー設定
+var player = new Sprite(32,54);
+player.frame = 0;
+player.image = game.assets['goki1.png'];
+player.x = gameWidth / 2;
+player.y = 100;
+player.rotate(180);
+
+//背景設定
+var tatami = new Sprite(320,960);
+tatami.image = game.assets['tatami.jpg'];
+tatami.y = -tatami.height + game.height;
+
+//けむりの定義
+var jetframe = new Sprite(180,59);
+jetframe.image = game.assets['kemuri.png'];
+jetframe.x = 115;
+jetframe.y = 300;
+
+//障害物設定
+var jet = new Sprite(50,150);
+jet.image = game.assets['jetr.png'];
+
+var hoihoi = new Sprite(170,59);
+hoihoi.image = game.assets['hoihoi.png'];
+
+//その他データ
+var score = 0;
+var timeLeft = 20 * game.fps;
+var sideSpeed;
+var downSpeed;
+var rand=Math.floor( Math.random() * 4);
+var rand2=Math.floor(Math.random() * 4);
+
+//タッチ場所取得
+var touchPosX = new Label();
+touchPosX.x = 5;
+touchPosX.y = 20;
+touchPosX.text = 'TouchX: 0';
+var touchX;
+
+//時間ラベル
+var timeLabel = new Label('Time: 0');
+timeLabel.x = 5;
+timeLabel.y = 5;
+
+/*スコアラベル
+var scoreLabel = new Label('Score: 0');
+scoreLabel.x = 200;
+scoreLabel.y = 5;
+
+//Rotateラベル
+var rotateLabel = new Label('Rotate: 0');
+rotateLabel.x = 200;
+rotateLabel.y = 20;
+
+//Speedラベル
+var speedLabel = new Label('Speed: 0');
+speedLabel.x = 200;
+speedLabel.y = 35;
+
+//Frameラベル
+var frameLabel = new Label('Frame: 0');
+frameLabel.x = 200;
+frameLabel.y = 50;
+*/
+
+//障害物出現！
+jet.x = gameWidth -30;
+jet.y = 300;f
+
+hoihoi.x = 5;
+hoihoi.y = 150;
+
+
+//************************************************
+
+
+
+//ゲーム(EnterFrame)
+this.addEventListener("enterframe", function() {
+//プレイヤーX軸移動
+player.x -= sideSpeed / 10;
+//画面端に移動できないようにする
+if(player.x <= 0){
+player.x = 0;
+}else if(player.x >= 290){
+player.x = 290;
+}
+
+//あたり判定
+if (player.intersect(jetframe)) || (player.intersect(hoihoi)){
+tatami.y = 0;
+player.image = game.assets['goki1.png'];
+game.assets['gusha.mp3'].play();
+game.stop();
+
+
+}
+
+
+frameLabel.text = 'Frame: ' + game.frame;
+
+// フレームイベントが発生したらマップをスクロール
+tatami.addEventListener(Event.ENTER_FRAME, function(){
+tatami.y = tatami.y + 1 ; // 下に移動
+
+// マップがスクロールし終わったら再度上に戻す
+if (tatami.y > -1 ){ 
+tatami.y = -tatami.height + game.height;
+}
+});
+
+//けむり
+
+var i = game.frame;
+
+
+/* for (var x = 0;x < 6; x= x+1){
+
+jetframe.delay(12).jetframe.frame = x;
+} */ 
+
+
+
+
+if (i % 6 == 0)
+jetframe.frame = 0;
+else if (i % 6 == 1)
+jetframe.frame = 1;
+else if (i % 6 == 2)
+jetframe.frame = 2;
+else if (i % 6 == 3)
+jetframe.frame = 3; 
+else if (i % 6 == 4)
+jetframe.frame = 4;
+else if (i % 6 == 5)
+jetframe.frame = 5;
+
+//落下速度の調整
+jetframe.y = jetframe.y - (3 + rand); // 下に移動
+jet.y = jet.y - (3 + rand); // 下に移動
+hoihoi.y = hoihoi.y - (3 + rand2) ; // 下に移動
+if(jet.y < -30){
+jet.y = 360;
+}
+if(hoihoi.y < -30){
+hoihoi.y = 360;
+rand2 = Math.floor( Math.random() * 5 );
+}
+if(jetframe.y < -30)
+jetframe.y = 360;
+
+
+
+
+jetframe.y = jetframe.y - 2 ; // 下に移動
+jet.y = jet.y - 2 ; // 下に移動
+hoihoi.y = jet.y - ( 3 + rand2);
+if(jet.y < -30){
+	jet.y = 360;
+}
+if(hoihoi.y < -30)
+	hoihoi.y = 360
+if(jetframe.y < -30)
+	jetframe.y = 360;
+
+
+//這い寄るゴキブリ
+game.assets['bgm.mp3'].play();
+});
+
+
+//***************************************************
+
+//ゲーム(TouchStart)
+this.rootScene.addEventListener('touchstart',function(e){
+touchPosX.text = 'TouchX:' + Math.round(e.localX);
+touchX = e.localX;
+
+if(touchX < gameWidth/2){
+if(player.rotation < 255)
+player.rotate(25);
+}else{
+if(player.rotation > 105)
+player.rotate(-25)
+}
+
+});
+
+//プレイヤー(EnterFrame)
+player.addEventListener("enterframe",function() {
+
+if(game.frame %2 == 0){
+player.image = game.assets['goki1.png'];
+}else{
+player.image = game.assets['goki2.png'];
+}
+sideSpeed = player.rotation -180;
+rotateLabel.text = "Rotate: " + sideSpeed;
+
+downSpeed = 90 - Math.abs(sideSpeed);
+speedLabel.text = "Speed: " + downSpeed;
+});
+
+game.rootScene.addChild(hoihoi);
+game.rootScene.addChild(tatami);
+game.rootScene.addChild(player);
+//game.rootScene.addChild(scoreLabel);
+game.rootScene.addChild(timeLabel);
+//game.rootScene.addChild(touchPosX);
+//game.rootScene.addChild(rotateLabel);
+//game.rootScene.addChild(speedLabel);
+//game.s.addChild(frameLabel);
+game.rootScene.addChild(jet);
+game.rootScene.addChild(jetframe);
+
+};
+
+game.start();
+};
