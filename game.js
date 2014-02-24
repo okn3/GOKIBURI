@@ -30,8 +30,8 @@ controller.loop(function(frame) {
 	// -1 < handPos < 1
 	if (frame.hands.length > 0) 
 	{
-		handPosX = hand.palmNormal[0];
-		handPosY = hand.palmNormal[2];
+		handPosX = hand.palmNormal[0] * 100;
+		handPosY = hand.palmNormal[2] * 100;
 	}
 
 window.onload = function() {
@@ -217,8 +217,8 @@ this.addEventListener("enterframe", function() {
 //プレイヤーX軸移動
 player.x -= sideSpeed / 10;
 hit.x -= sideSpeed / 10;
-player.x -= fingerPosX;
-hit.x -= fingerPosX;
+player.x -= handPosX;
+hit.x -= handPosX;
 
 //画面端に移動不可
 if(player.x <= 0){
@@ -237,8 +237,8 @@ hit.x = 290;
 //y軸方向移動
 // player.y -= sideSpeed / 10;
 // hit.y -= sideSpeed / 10;
-player.y -= fingerPosY;
-hit.y -= fingerPosY;
+player.y -= handPosY;
+hit.y -= handPosY;
 
 //画面端に移動不可
 if(player.y <= 0){
