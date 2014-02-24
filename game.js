@@ -4,8 +4,12 @@ enchant();
 
 
 
-var fingerPosX = 0;
-var fingerPosY = 0;
+// var fingerPosX = 0;
+// var fingerPosY = 0;
+
+// hand position
+var handPosX = 0;
+var handPosY = 0;
 
 //leap motion setup
 var controller = new Leap.Controller({enableGestures: true});
@@ -13,12 +17,22 @@ var controller = new Leap.Controller({enableGestures: true});
 //leap motion loop
 controller.loop(function(frame) {
 //	console.log("leap:"+frame.fingers.length);
-	if(frame.fingers.length > 0)
+// 	if(frame.fingers.length > 0)
+// 	{
+// 		console.log("pos:"+frame.pointables[0].tipPosition[0]);
+// 		fingerPosX = frame.fingers[0].tipPosition[0] + 150;
+// 	}
+// });
+
+	//最初に認識した手で操作。
+	var hand = frame.hands[0];
+	
+	// -1 < handPos < 1
+	if (frame.hands.length > 0) 
 	{
-		console.log("pos:"+frame.pointables[0].tipPosition[0]);
-		fingerPosX = frame.fingers[0].tipPosition[0] + 150;
+		handPosX = hand.palmNormal[0];
+		handPosY = hand.palmNormal[2];
 	}
-});
 
 window.onload = function() {
 
