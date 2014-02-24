@@ -30,8 +30,17 @@ controller.loop(function(frame) {
 	// -1 < handPos < 1
 	if (frame.hands.length > 0) 
 	{
-		handPosX = hand.palmNormal[0] * 100;
-		handPosY = hand.palmNormal[2] * 100;
+		handPosX = hand.palmNormal[0] * 10;
+		handPosY = hand.palmNormal[2] * 10;
+		if (handPosY > 0)
+		{
+			handPosY = handPosY * 1.5;
+		}
+
+		if (5 > handPosY > 0)
+		{
+			handPosY = handPosY * 1.2;
+		}
 	}
 });
 
