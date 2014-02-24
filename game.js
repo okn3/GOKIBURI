@@ -22,7 +22,7 @@ controller.loop(function(frame) {
 // 		console.log("pos:"+frame.pointables[0].tipPosition[0]);
 // 		fingerPosX = frame.fingers[0].tipPosition[0] + 150;
 // 	}
-// });
+ 
 
 	//最初に認識した手で操作。
 	var hand = frame.hands[0];
@@ -33,6 +33,7 @@ controller.loop(function(frame) {
 		handPosX = hand.palmNormal[0] * 100;
 		handPosY = hand.palmNormal[2] * 100;
 	}
+});
 
 window.onload = function() {
 
@@ -328,8 +329,8 @@ score = score_time + score_item * 10;
 timeLabel.font  = "15px 'Consolas', 'Monaco', 'ＭＳ ゴシック'"
 timeLabel.text = '現在のポイント: ' + score + "点";
 
-scoreLabel.font  = "15px 'Consolas', 'Monaco', 'ＭＳ ゴシック'"
-scoreLabel.text = 'ハンバーガー: ' + score_item+ "個";
+// scoreLabel.font  = "15px 'Consolas', 'Monaco', 'ＭＳ ゴシック'"
+// scoreLabel.text = 'ハンバーガー: ' + score_item+ "個";
 
 //frameLabel.text = 'Frame: ' + game.frame;
 
@@ -417,7 +418,7 @@ if(player.rotation < 255)
 player.rotate(25);
 }else{
 if(player.rotation > 105)
-player.rotate(-25)
+player.rotate(-25);
 }
 });
 
