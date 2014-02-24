@@ -1,5 +1,24 @@
 enchant();
 
+//　leapmotionの設定
+
+
+
+var fingerPosX = 0;
+var fingerPosY = 0;
+
+//leap motion setup
+var controller = new Leap.Controller({enableGestures: true});
+
+//leap motion loop
+controller.loop(function(frame) {
+//	console.log("leap:"+frame.fingers.length);
+	if(frame.fingers.length > 0)
+	{
+		console.log("pos:"+frame.pointables[0].tipPosition[0]);
+		fingerPosX = frame.fingers[0].tipPosition[0] + 150;
+	}
+});
 
 window.onload = function() {
 
@@ -27,8 +46,6 @@ game.preload('kemuri.png');
 game.preload('hb.png');
 game.preload('yaji_l.png');
 game.preload('yaji_r.png');
-
-
 game.preload('bgm.mp3');
 game.preload('end.mp3');
 game.preload('spray.mp3');
@@ -56,14 +73,16 @@ var player = new Sprite(27,45);
 player.frame = 0;
 player.image = game.assets['goki1.png'];
 player.x = gameWidth / 2;
-player.y = 100;
+player.y = 150;
+// player.y = gameHight / 2;
 player.rotate(180);
 
 //当たり判定
 var hit = new Sprite(5,10);
 hit.frame = 0;
 hit.x = gameWidth / 2;
-hit.y = 110;
+hit.y = 160;
+// hit.y = gameHight / 2;
 hit.rotate(180);
 
 //背景設定
@@ -125,12 +144,7 @@ var timeLabel = new Label('Score: 0');
 timeLabel.x = 10;
 timeLabel.y = 5;
 
-// //説明ラベル
-// var exeLabel = new Label();
-// exeLabel.x = 100;
-// exeLabel.y = 450;
-// exeLabel.font  = "20px 'Consolas', 'Monaco', 'ＭＳ ゴシック'"
-// exeLabel.text = '←　[ｷｰﾎﾞｰﾄﾞ]　→';
+
 
 //タッチ場所取得
 var touchPosX = new Label();
@@ -189,6 +203,8 @@ this.addEventListener("enterframe", function() {
 //プレイヤーX軸移動
 player.x -= sideSpeed / 10;
 hit.x -= sideSpeed / 10;
+player.x -= fingerPosX;
+hit.x -= fingerPosX;
 
 //画面端に移動不可
 if(player.x <= 0){
@@ -201,6 +217,26 @@ if(hit.x <= 0){
 hit.x = 0;
 }else if(hit.x >= 290){
 hit.x = 290;
+}
+
+
+//y軸方向移動
+// player.y -= sideSpeed / 10;
+// hit.y -= sideSpeed / 10;
+player.y -= fingerPosY;
+hit.y -= fingerPosY;
+
+//画面端に移動不可
+if(player.y <= 0){
+player.y = 0;
+}else if(player.y >= 450){
+player.y = 450;
+}
+
+if(hit.y <= 0){
+hit.y = 0;
+}else if(hit.y >= 450){
+hit.y = 450;
 }
 
 // player.onenterframe = function(){
@@ -382,7 +418,21 @@ if(game.input.left){
 if(game.input.right){
 	game.assets['kasakasa.mp3'].play();
 	if(player.rotation > 105)
-	player.rotate(-25)
+	player.rotate(-25);
+	}
+if(game.input.up){ //書き足した
+	game.assets['kasakasa.mp3'].play();
+	// if(player.rotation > 105)
+	// player.rotate(0);
+	player.y -= 25;
+	hit.y -= 25;
+	}
+if(game.input.down){
+	game.assets['kasakasa.mp3'].play();
+	// if(player.rotation > 105)
+	// player.rotate(0);
+	player.y += 25;
+	hit.y += 25;
 	}
 };
 
@@ -408,11 +458,6 @@ game.rootScene.addChild(player);
 game.rootScene.addChild(timeLabel);
 game.rootScene.addChild(guide_r);
 game.rootScene.addChild(guide_l);
-//game.rootScene.addChild(exeLabel);
-//game.rootScene.addChild(touchPosX);
-//game.rootScene.addChild(rotateLabel);
-//game.rootScene.addChild(speedLabel);
-//game.rootScene.addChild(frameLabel);
 game.rootScene.addChild(jet);
 game.rootScene.addChild(hoihoi);
 game.rootScene.addChild(kumo);
