@@ -455,8 +455,8 @@ if(game.input.down){
 	game.assets['kasakasa.mp3'].play();
 	// if(player.rotation > 105)
 	// player.rotate(0);
-	player.y += 25;
-	hit.y += 25;
+	player.y += 30;
+	hit.y += 30;
 	}
 };
 
